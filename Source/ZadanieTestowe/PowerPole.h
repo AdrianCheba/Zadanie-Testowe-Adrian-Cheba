@@ -24,13 +24,41 @@ public:
 	class UStaticMeshComponent* Pole;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	class UStaticMeshComponent* PolePlank;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	class UStaticMeshComponent* PoleInsulatorRight;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	class UStaticMeshComponent* PoleInsulatorLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
 	float DistanceBetweenPoles;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesThickness;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesNumberOfSegments;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesGravityScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	bool GenerateCables;
+
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	void GenerateMeshes();
-	TArray<UStaticMeshComponent*> MeshComponents;
-
+	void GeneratePoles();
+	void AttacheComponents(UStaticMeshComponent* MeshComponent);
+	void ClearComponents();
+	void GenerateLines(UStaticMeshComponent* StartPoint, UStaticMeshComponent* EndPoint, float Distance);
+	TArray<UStaticMeshComponent*> PoleMeshComponents;
+	TArray<UStaticMeshComponent*> PoleInsulatorRightComponents;
+	TArray<UStaticMeshComponent*> PoleInsulatorLeftComponents;
+	TArray<UStaticMeshComponent*> OtherMeshComponents;
+	TArray<class UCableComponent*> CableComponents;
 };
