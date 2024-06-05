@@ -35,7 +35,7 @@ APowerPole::APowerPole()
 	DistanceBetweenPoles = 100.0f;
 	CablesThickness = 1.0f;
 	CablesNumberOfSegments = 10.0f;
-	CablesNumberOfSegments = 1.0f;
+	CablesGravityScale = 1.0f;
 }
 
 void APowerPole::BeginPlay()
@@ -81,7 +81,7 @@ void APowerPole::GeneratePoles()
 
 		if (i > 0) 
 			if(GenerateCables)
-			GenerateLines(MeshComponent, PoleMeshComponents[i - 1], Distance);
+				GenerateLines(MeshComponent, PoleMeshComponents[i - 1], Distance);
 	}
 }
 
