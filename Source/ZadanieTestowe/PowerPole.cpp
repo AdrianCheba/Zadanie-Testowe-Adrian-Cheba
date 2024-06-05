@@ -8,7 +8,6 @@
 #include "CableComponent.h"
 #include "Components/SceneComponent.h"
 
-// Sets default values
 APowerPole::APowerPole()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -169,11 +168,11 @@ void APowerPole::ClearComponents()
 	}
 	OtherMeshComponents.Empty();
 	
-	for (UCableComponent* Component5 : CableComponents)
+	for (UCableComponent* Component3 : CableComponents)
 	{
-		if (Component5)
+		if (Component3)
 		{
-			Component5->DestroyComponent();
+			Component3->DestroyComponent();
 		}
 	}
 	CableComponents.Empty();
