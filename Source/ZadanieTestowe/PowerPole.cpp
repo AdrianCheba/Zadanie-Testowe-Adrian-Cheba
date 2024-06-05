@@ -33,6 +33,9 @@ APowerPole::APowerPole()
 
 
 	DistanceBetweenPoles = 100.0f;
+	CablesThickness = 1.0f;
+	CablesNumberOfSegments = 10.0f;
+	CablesNumberOfSegments = 1.0f;
 }
 
 void APowerPole::BeginPlay()
@@ -77,27 +80,52 @@ void APowerPole::GeneratePoles()
 		AttacheComponents(MeshComponent);	
 
 		if (i > 0) 
-		{
-			FVector StartSocketLocation = MeshComponent->DoesSocketExist(FName("InsulatorLeftSocket")) ? MeshComponent->GetSocketLocation(FName("InsulatorLeftSocket")) : MeshComponent->GetComponentLocation();
-			FVector EndSocketLocation = PoleMeshComponents[i - 1]->DoesSocketExist(FName("InsulatorRightSocket")) ? PoleMeshComponents[i - 1]->GetSocketLocation(FName("InsulatorRightSocket")) : PoleMeshComponents[i - 1]->GetComponentLocation();
-
-
-			UCableComponent* CableComponent = NewObject<UCableComponent>(this);
-			CableComponent->SetupAttachment(Pole);
-
-			CableComponent->SetAttachEndToComponent(MeshComponent, FName("InsulatorLeftSocket"));
-			CableComponent->SetAttachEndToComponent(PoleMeshComponents[i-1], FName("InsulatorRightSocket"));
-			CableComponent->CableWidth = 1;
-
-			FVector StartLocation = MeshComponent->GetSocketLocation(FName("InsulatorLeftSocket"));
-			FVector EndLocation = PoleMeshComponents[i - 1]->GetSocketLocation(FName("InsulatorRightSocket"));
-			CableComponent->SetWorldLocation(StartSocketLocation);
-			CableComponent->EndLocation = (EndSocketLocation - StartSocketLocation) / Distance;
-			CableComponent->RegisterComponent();
-
-			CableComponents.Add(CableComponent);
-		}
+			if(GenerateCables)
+			GenerateLines(MeshComponent, PoleMeshComponents[i - 1], Distance);
 	}
+}
+
+void APowerPole::GenerateLines(UStaticMeshComponent* StartPoint, UStaticMeshComponent* EndPoint, float Distance)
+{
+	FVector StartSocketLocation = StartPoint->DoesSocketExist(FName("InsulatorRightSocket")) ? StartPoint->GetSocketLocation(FName("InsulatorRightSocket")) : StartPoint->GetComponentLocation();
+	FVector EndSocketLocation = EndPoint->DoesSocketExist(FName("InsulatorRightSocket")) ? EndPoint->GetSocketLocation(FName("InsulatorRightSocket")) : EndPoint->GetComponentLocation();
+
+
+	UCableComponent* CableComponentRight = NewObject<UCableComponent>(this);
+	CableComponentRight->SetupAttachment(Pole);
+
+	CableComponentRight->SetAttachEndToComponent(StartPoint, FName("InsulatorRightSocket"));
+	CableComponentRight->SetAttachEndToComponent(EndPoint, FName("InsulatorRightSocket"));
+	CableComponentRight->CableWidth = CablesThickness;
+	CableComponentRight->NumSegments = CablesNumberOfSegments;
+	CableComponentRight->CableGravityScale = CablesGravityScale;
+
+	FVector StartLocation = StartPoint->GetSocketLocation(FName("InsulatorRightSocket"));
+	FVector EndLocation = EndPoint->GetSocketLocation(FName("InsulatorRightSocket"));
+	CableComponentRight->SetWorldLocation(StartSocketLocation);
+	CableComponentRight->EndLocation = (EndSocketLocation - StartSocketLocation) / Distance;
+	CableComponentRight->RegisterComponent();
+
+	CableComponents.Add(CableComponentRight);
+
+	StartSocketLocation = StartPoint->DoesSocketExist(FName("InsulatorLeftSocket")) ? StartPoint->GetSocketLocation(FName("InsulatorLeftSocket")) : StartPoint->GetComponentLocation();
+	EndSocketLocation = EndPoint->DoesSocketExist(FName("InsulatorLeftSocket")) ? EndPoint->GetSocketLocation(FName("InsulatorLeftSocket")) : EndPoint->GetComponentLocation();
+
+	UCableComponent* CableComponentLeft = NewObject<UCableComponent>(this);
+	CableComponentLeft->SetupAttachment(Pole);
+
+	CableComponentLeft->SetAttachEndToComponent(StartPoint, FName("InsulatorLeftSocket"));
+	CableComponentLeft->SetAttachEndToComponent(EndPoint, FName("InsulatorLeftSocket"));
+	CableComponentLeft->CableWidth = CablesThickness;
+	CableComponentLeft->NumSegments = CablesNumberOfSegments;
+	CableComponentLeft->CableGravityScale = CablesGravityScale;
+
+	StartLocation = StartPoint->GetSocketLocation(FName("InsulatorLeftSocket"));
+	EndLocation = EndPoint->GetSocketLocation(FName("InsulatorLeftSocket"));
+	CableComponentLeft->SetWorldLocation(StartSocketLocation);
+	CableComponentLeft->EndLocation = (EndSocketLocation - StartSocketLocation) / Distance;
+	CableComponentLeft->RegisterComponent();
+	CableComponents.Add(CableComponentLeft);
 }
 
 void APowerPole::AttacheComponents(UStaticMeshComponent* MeshComponent)
@@ -150,4 +178,7 @@ void APowerPole::ClearComponents()
 	}
 	CableComponents.Empty();
 }
+
+
+
 

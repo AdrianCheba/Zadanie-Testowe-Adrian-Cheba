@@ -32,8 +32,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	class UStaticMeshComponent* PoleInsulatorLeft;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
 	float DistanceBetweenPoles;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesThickness;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesNumberOfSegments;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
+	float CablesGravityScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cables")
 	bool GenerateCables;
@@ -46,6 +55,7 @@ private:
 	void GeneratePoles();
 	void AttacheComponents(UStaticMeshComponent* MeshComponent);
 	void ClearComponents();
+	void GenerateLines(UStaticMeshComponent* StartPoint, UStaticMeshComponent* EndPoint, float Distance);
 	TArray<UStaticMeshComponent*> PoleMeshComponents;
 	TArray<UStaticMeshComponent*> PoleInsulatorRightComponents;
 	TArray<UStaticMeshComponent*> PoleInsulatorLeftComponents;
